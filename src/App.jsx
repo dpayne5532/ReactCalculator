@@ -2,115 +2,88 @@ import { useState } from "react";
 import "./App.css";
 
 const CalculatorPage = () => {
-  const [selection1, setSelection1] = useState(false); // True/False dropdown
-  const [checkboxValues, setCheckboxValues] = useState([]); // Array to hold selected checkbox values
-  const [value2, setValue2] = useState(0);
-  const [value3, setValue3] = useState(0);
-  const [value4, setValue4] = useState(0);
-  const [value5, setValue5] = useState(0);
-  const [value6, setValue6] = useState(0);
-  const [value7, setValue7] = useState(0);
-  const [value8, setValue8] = useState(0);
+  const initialState = [
+    { isTrue: false, selectedValues: [] }, // Selection 1
+    { isTrue: false, selectedValues: [] }, // Selection 2
+    { isTrue: false, selectedValues: [] }, // Selection 3
+    { isTrue: false, selectedValues: [] }, // Selection 4
+    { isTrue: false, selectedValues: [] }, // Selection 5
+    { isTrue: false, selectedValues: [] }, // Selection 6
+    { isTrue: false, selectedValues: [] }, // Selection 7
+    { isTrue: false, selectedValues: [] }, // Selection 8
+  ];
+
+  const [selections, setSelections] = useState(initialState);
   const [result, setResult] = useState(null);
 
-  const numbers = Array.from({ length: 10 }, (_, i) => i); // Array [0, 1, 2, ..., 9]
+  const handleTrueFalseChange = (index, value) => {
+    const updatedSelections = [...selections];
+    updatedSelections[index].isTrue = value;
+    updatedSelections[index].selectedValues = value ? updatedSelections[index].selectedValues : [];
+    setSelections(updatedSelections);
+  };
 
-  // Handles checkbox toggling
-  const handleCheckboxChange = (number) => {
-    setCheckboxValues((prev) =>
-      prev.includes(number)
-        ? prev.filter((n) => n !== number) // Remove if unchecked
-        : [...prev, number] // Add if checked
-    );
+  const handleCheckboxChange = (index, number) => {
+    const updatedSelections = [...selections];
+    const selectedValues = updatedSelections[index].selectedValues;
+
+    // Toggle the checkbox value
+    if (selectedValues.includes(number)) {
+      updatedSelections[index].selectedValues = selectedValues.filter((n) => n !== number);
+    } else {
+      updatedSelections[index].selectedValues = [...selectedValues, number];
+    }
+    setSelections(updatedSelections);
   };
 
   const handleCalculate = () => {
-    // Sum the selected checkbox values
-    const checkboxSum = checkboxValues.reduce((acc, num) => acc + num, 0);
+    const totalProduct = selections.reduce((product, selection) => {
+      const sumOfCheckboxes = selection.selectedValues.reduce((sum, num) => sum + num, 0);
+      return product * (selection.isTrue ? sumOfCheckboxes || 1 : 1);
+    }, 1);
 
-    // Final calculation
-    setResult(
-      (selection1 ? checkboxSum : 1) *
-        value2 *
-        value3 *
-        value4 *
-        value5 *
-        value6 *
-        value7 *
-        value8
-    );
+    setResult(totalProduct);
   };
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h1>Calculator</h1>
+      <h1>Cat Calc 2025</h1>
 
-      {/* Selection 1: True/False Dropdown */}
-      <div style={{ marginBottom: "10px" }}>
-        <label>
-          Selection 1 (True/False):
-          <select
-            value={selection1}
-            onChange={(e) => setSelection1(e.target.value === "true")}
-            style={{ marginLeft: "10px", padding: "5px" }}
-          >
-            <option value="false">False</option>
-            <option value="true">True</option>
-          </select>
-        </label>
-      </div>
+      {/* Render dropdowns and checkboxes dynamically */}
+      {selections.map((selection, index) => (
+        <div key={index} style={{ marginBottom: "20px" }}>
+          <label>
+            Selection {index + 1}:
+            <select
+              value={selection.isTrue}
+              onChange={(e) => handleTrueFalseChange(index, e.target.value === "true")}
+              style={{ marginLeft: "10px", padding: "5px" }}
+            >
+              <option value="false">False</option>
+              <option value="true">True</option>
+            </select>
+          </label>
 
-      {/* Checkboxes that appear if Selection 1 is True */}
-      {selection1 && (
-        <div style={{ marginBottom: "10px" }}>
-          <p>Select Numbers:</p>
-          {[1, 2, 3].map((num) => (
-            <label key={num} style={{ marginRight: "10px" }}>
-              <input
-                type="checkbox"
-                value={num}
-                checked={checkboxValues.includes(num)}
-                onChange={() => handleCheckboxChange(num)}
-                style={{ marginRight: "5px" }}
-              />
-              {num}
-            </label>
-          ))}
+          {/* Checkboxes that appear if True */}
+          {selection.isTrue && (
+            <div style={{ marginTop: "10px" }}>
+              <p>Select Numbers:</p>
+              {[1, 2, 3].map((num) => (
+                <label key={num} style={{ marginRight: "10px" }}>
+                  <input
+                    type="checkbox"
+                    value={num}
+                    checked={selection.selectedValues.includes(num)}
+                    onChange={() => handleCheckboxChange(index, num)}
+                    style={{ marginRight: "5px" }}
+                  />
+                  {num}
+                </label>
+              ))}
+            </div>
+          )}
         </div>
-      )}
-
-      {/* Additional Dropdowns */}
-      {[value2, value3, value4, value5, value6, value7, value8].map(
-        (value, index) => (
-          <div style={{ marginBottom: "10px" }} key={index}>
-            <label>
-              Select Number {index + 2}:
-              <select
-                value={value}
-                onChange={(e) => {
-                  const setters = [
-                    setValue2,
-                    setValue3,
-                    setValue4,
-                    setValue5,
-                    setValue6,
-                    setValue7,
-                    setValue8,
-                  ];
-                  setters[index](Number(e.target.value));
-                }}
-                style={{ marginLeft: "10px", padding: "5px" }}
-              >
-                {numbers.map((num) => (
-                  <option key={num} value={num}>
-                    {num}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-        )
-      )}
+      ))}
 
       {/* Calculate Button */}
       <button
