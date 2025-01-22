@@ -2,7 +2,8 @@ import { useState } from "react";
 import "./App.css";
 
 const CalculatorPage = () => {
-  const [value1, setValue1] = useState(0);
+  const [selection1, setSelection1] = useState(false); // True/False dropdown
+  const [checkboxValues, setCheckboxValues] = useState([]); // Array to hold selected checkbox values
   const [value2, setValue2] = useState(0);
   const [value3, setValue3] = useState(0);
   const [value4, setValue4] = useState(0);
@@ -14,25 +15,80 @@ const CalculatorPage = () => {
 
   const numbers = Array.from({ length: 10 }, (_, i) => i); // Array [0, 1, 2, ..., 9]
 
+  // Handles checkbox toggling
+  const handleCheckboxChange = (number) => {
+    setCheckboxValues((prev) =>
+      prev.includes(number)
+        ? prev.filter((n) => n !== number) // Remove if unchecked
+        : [...prev, number] // Add if checked
+    );
+  };
+
   const handleCalculate = () => {
+    // Sum the selected checkbox values
+    const checkboxSum = checkboxValues.reduce((acc, num) => acc + num, 0);
+
+    // Final calculation
     setResult(
-      value1 * value2 * value3 * value4 * value5 * value6 * value7 * value8
+      (selection1 ? checkboxSum : 1) *
+        value2 *
+        value3 *
+        value4 *
+        value5 *
+        value6 *
+        value7 *
+        value8
     );
   };
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
       <h1>Calculator</h1>
-      {[value1, value2, value3, value4, value5, value6, value7, value8].map(
+
+      {/* Selection 1: True/False Dropdown */}
+      <div style={{ marginBottom: "10px" }}>
+        <label>
+          Selection 1 (True/False):
+          <select
+            value={selection1}
+            onChange={(e) => setSelection1(e.target.value === "true")}
+            style={{ marginLeft: "10px", padding: "5px" }}
+          >
+            <option value="false">False</option>
+            <option value="true">True</option>
+          </select>
+        </label>
+      </div>
+
+      {/* Checkboxes that appear if Selection 1 is True */}
+      {selection1 && (
+        <div style={{ marginBottom: "10px" }}>
+          <p>Select Numbers:</p>
+          {[1, 2, 3].map((num) => (
+            <label key={num} style={{ marginRight: "10px" }}>
+              <input
+                type="checkbox"
+                value={num}
+                checked={checkboxValues.includes(num)}
+                onChange={() => handleCheckboxChange(num)}
+                style={{ marginRight: "5px" }}
+              />
+              {num}
+            </label>
+          ))}
+        </div>
+      )}
+
+      {/* Additional Dropdowns */}
+      {[value2, value3, value4, value5, value6, value7, value8].map(
         (value, index) => (
           <div style={{ marginBottom: "10px" }} key={index}>
             <label>
-              Select Number {index + 1}:
+              Select Number {index + 2}:
               <select
                 value={value}
                 onChange={(e) => {
                   const setters = [
-                    setValue1,
                     setValue2,
                     setValue3,
                     setValue4,
@@ -56,6 +112,7 @@ const CalculatorPage = () => {
         )
       )}
 
+      {/* Calculate Button */}
       <button
         onClick={handleCalculate}
         style={{
@@ -70,6 +127,7 @@ const CalculatorPage = () => {
         Calculate
       </button>
 
+      {/* Result Display */}
       {result !== null && (
         <div style={{ marginTop: "20px", fontSize: "18px" }}>
           <strong>Result:</strong> {result}
@@ -86,5 +144,6 @@ export default function App() {
     </div>
   );
 }
+
 
 
