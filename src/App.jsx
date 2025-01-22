@@ -47,7 +47,7 @@ const CalculatorPage = () => {
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h1>Cat Calc 2025</h1>
+      <h1>Advanced Calculator</h1>
 
       {/* Render dropdowns and checkboxes dynamically */}
       {selections.map((selection, index) => (
@@ -66,10 +66,10 @@ const CalculatorPage = () => {
 
           {/* Checkboxes that appear if True */}
           {selection.isTrue && (
-            <div style={{ marginTop: "10px" }}>
-              <p>Select Numbers:</p>
+            <div style={{ marginTop: "10px", display: "flex", flexDirection: "column" }}>
+
               {[1, 2, 3].map((num) => (
-                <label key={num} style={{ marginRight: "10px" }}>
+                <label key={num} style={{ marginBottom: "5px" }}>
                   <input
                     type="checkbox"
                     value={num}
@@ -117,6 +117,3 @@ export default function App() {
     </div>
   );
 }
-
-
-
