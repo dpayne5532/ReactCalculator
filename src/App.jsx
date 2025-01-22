@@ -47,7 +47,7 @@ const CalculatorPage = () => {
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h1>Advanced Calculator</h1>
+      <h1>Cat Calc 2025</h1>
 
       {/* Render dropdowns and checkboxes dynamically */}
       {selections.map((selection, index) => (
