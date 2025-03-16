@@ -47,7 +47,7 @@ const CalculatorPage = () => {
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h1>Cat Calc 2025</h1>
+  <h1 style={{ color: "#0AEF84" }}>Cat Calc 2025</h1>
 
       {/* Render dropdowns and checkboxes dynamically */}
       {selections.map((selection, index) => (
@@ -90,7 +90,7 @@ const CalculatorPage = () => {
         onClick={handleCalculate}
         style={{
           padding: "10px 20px",
-          backgroundColor: "#007BFF",
+          backgroundColor: "#0AEF84",
           color: "white",
           border: "none",
           borderRadius: "5px",
